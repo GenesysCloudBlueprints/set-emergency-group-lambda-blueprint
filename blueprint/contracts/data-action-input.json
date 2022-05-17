@@ -1,0 +1,19 @@
+{
+    "title" : "LambdaRequest",
+    "type" : "object",
+    "properties" : {
+      "ClientID" : {
+        "type" : "string"
+      },
+      "ClientSecret" : {
+        "type" : "string"
+      },
+      "GroupID" : {
+        "type": "string"
+      },
+      "EnableEmergencyGroup" : {
+        "type": "boolean"
+      }
+    },
+    "additionalProperties" : true
+}

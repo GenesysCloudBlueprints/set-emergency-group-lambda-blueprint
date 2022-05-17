@@ -1,0 +1,10 @@
+{
+    "title" : "LambdaResponse",
+    "type" : "object",
+    "properties" : {
+      "Success" : {
+        "type" : "boolean"
+      }
+    },
+    "additionalProperties" : true
+}

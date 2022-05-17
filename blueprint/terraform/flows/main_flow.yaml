@@ -1,0 +1,267 @@
+inboundCall:
+  name: "{{prefix}}-Call-Flow"
+  division: New Home
+  startUpRef: "/inboundCall/menus/menu[Main Menu_10]"
+  defaultLanguage: en-us
+  supportedLanguages:
+    en-us:
+      defaultLanguageSkill:
+        noValue: true
+      textToSpeech:
+        defaultEngine:
+          voice: Jill
+  initialGreeting:
+    tts: Hello, this is the initial greeting of the main flow.
+  settingsActionDefaults:
+    playAudioOnSilence:
+      timeout:
+        lit:
+          seconds: 40
+    detectSilence:
+      timeout:
+        lit:
+          seconds: 40
+    callData:
+      processingPrompt:
+        lit:
+          name: PromptSystem.processing
+    callBridge:
+      processingPrompt:
+        lit:
+          name: PromptSystem.processing
+    collectInput:
+      noEntryTimeout:
+        lit:
+          seconds: 5
+    dialByExtension:
+      interDigitTimeout:
+        lit:
+          seconds: 6
+    transferToUser:
+      connectTimeout:
+        noValue: true
+    transferToNumber:
+      connectTimeout:
+        noValue: true
+    transferToGroup:
+      connectTimeout:
+        noValue: true
+    transferToFlowSecure:
+      connectTimeout:
+        lit:
+          seconds: 15
+  settingsErrorHandling:
+    errorHandling:
+      disconnect:
+        none: true
+    preHandlingAudio:
+      tts: Sorry, an error occurred. Please try your call again.
+  settingsMenu:
+    extensionDialingMaxDelay:
+      lit:
+        seconds: 1
+    listenForExtensionDialing:
+      lit: true
+    menuSelectionTimeout:
+      lit:
+        seconds: 10
+    repeatCount:
+      lit: 3
+  settingsPrompts:
+    ensureAudioInPrompts: false
+    promptMediaToValidate:
+      - mediaType: audio
+      - mediaType: tts
+  settingsSpeechRec:
+    completeMatchTimeout:
+      lit:
+        ms: 100
+    incompleteMatchTimeout:
+      lit:
+        ms: 1500
+    maxSpeechLengthTimeout:
+      lit:
+        seconds: 20
+    minConfidenceLevel:
+      lit: 50
+    asrCompanyDir: none
+    asrEnabledOnFlow: true
+  menus:
+    - menu:
+        name: Main Menu
+        refId: Main Menu_10
+        audio:
+          tts: You are at the Main Menu. Press 1 to continue. Press 9 to disconnect
+        settingsMenu:
+          extensionDialingMaxDelay:
+            noValue: true
+          listenForExtensionDialing:
+            noValue: true
+          menuSelectionTimeout:
+            noValue: true
+          repeatCount:
+            noValue: true
+        settingsSpeechRec:
+          completeMatchTimeout:
+            noValue: true
+          incompleteMatchTimeout:
+            noValue: true
+          maxSpeechLengthTimeout:
+            noValue: true
+          minConfidenceLevel:
+            noValue: true
+        choices:
+          - menuDisconnect:
+              name: Disconnect
+              dtmf: digit_9
+              globalDtmf: false
+              globalSpeechRecTerms: false
+          - menuJumpToTask:
+              name: Jump to Reusable Task
+              refId: Jump to Reusable Task_52
+              dtmf: digit_1
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              targetTaskRef: "/inboundCall/tasks/task[Parent Task_12]"
+        defaultChildMenuRef: "./choices/menuJumpToTask[Jump to Reusable Task_52]"
+  tasks:
+    - task:
+        name: Parent Task
+        refId: Parent Task_12
+        variables:
+          - stringVariable:
+              name: Task.choice
+              initialValue:
+                noValue: true
+              isInput: false
+              isOutput: false
+        actions:
+          - collectInput:
+              name: Collect Input
+              inputData:
+                var: Task.choice
+              digits:
+                range:
+                  terminatingDtmf: digit_9
+                  min: 1
+                  max: 2
+              interDigitTimeout:
+                noValue: true
+              noEntryTimeout:
+                noValue: true
+              inputAudio:
+                tts: Enter 1 to enable the emergency group, and 2 to disable. 9 to terminate.
+              includeTerminatingDtmfInResultData: false
+              acceptJustStar:
+                lit: false
+              acceptJustPound:
+                lit: false
+              verificationType: numeric
+              outputs:
+                success:
+                  actions:
+                    - decision:
+                        name: Decision
+                        condition:
+                          exp: Task.choice == "1"
+                        outputs:
+                          "yes":
+                            actions:
+                              - callData:
+                                  name: Enable Emergency Group
+                                  processingPrompt:
+                                    noValue: true
+                                  timeout:
+                                    lit:
+                                      minutes: 1
+                                  category:
+                                    {{prefix}}-Lambda:
+                                      dataAction:
+                                        {{prefix}}-data-action:
+                                          inputs:
+                                            ClientID:
+                                              lit: "{{clientId}}"
+                                            ClientSecret:
+                                              lit: "{{clientSecret}}"
+                                            EnableEmergencyGroup:
+                                              lit: true
+                                            GroupID:
+                                              lit: "{{groupID}}"
+                                          successOutputs:
+                                            Success:
+                                              noValue: true
+                                  outputs:
+                                    success:
+                                      actions:
+                                        - playAudio:
+                                            name: Data Action Success
+                                            audio:
+                                              tts: Success!
+                                    failure:
+                                      actions:
+                                        - playAudio:
+                                            name: Data Action Failure
+                                            audio:
+                                              tts: Data Action Failed.
+                                    timeout:
+                                      actions:
+                                        - playAudio:
+                                            name: Data Action Timeout
+                                            audio:
+                                              tts: Data action timed out!
+                          "no":
+                            actions:
+                              - callData:
+                                  name: Disable Emergency Group
+                                  processingPrompt:
+                                    noValue: true
+                                  timeout:
+                                    lit:
+                                      minutes: 1
+                                  category:
+                                    {{prefix}}-Lambda:
+                                      dataAction:
+                                        {{prefix}}-data-action:
+                                          inputs:
+                                            ClientID:
+                                              lit: "{{clientId}}"
+                                            ClientSecret:
+                                              lit: "{{clientSecret}}"
+                                            EnableEmergencyGroup:
+                                              lit: false
+                                            GroupID:
+                                              lit: "{{groupID}}"
+                                          successOutputs:
+                                            Success:
+                                              noValue: true
+                                  outputs:
+                                    success:
+                                      actions:
+                                        - playAudio:
+                                            name: Data Action Success
+                                            audio:
+                                              tts: Success!
+                                    failure:
+                                      actions:
+                                        - playAudio:
+                                            name: Data Action Failure
+                                            audio:
+                                              tts: Data Action Failed.
+                                    timeout:
+                                      actions:
+                                        - playAudio:
+                                            name: Data Action Timeout
+                                            audio:
+                                              tts: Data action timed out!
+                failure:
+                  actions:
+                    - playAudio:
+                        name: Collect Failure Audio
+                        audio:
+                          tts: Failed to collect input data.
+          - playAudio:
+              name: Disconnect Audio
+              audio:
+                tts: You are now being disconnected. Goodbye!
+          - disconnect:
+              name: Disconnect
