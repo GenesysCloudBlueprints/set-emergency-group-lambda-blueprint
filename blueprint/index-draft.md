@@ -19,7 +19,7 @@ This blueprint demonstrates how to:
 
 ## Scenario
 
-You want to trigger a data action from your Architect flow that enables or disables an emergency group by ID. However, the Architect API provides only a PUT method to accomplish, which overwrites the emergency group and disconnects all of its associated IVRs unless their GUIDs are provided in the request body. The workaround is to perform a GET operation on the emergency group, change the value of `enabled` in the response object, and use that JSON data as your request body in the PUT operation. These operations cannot be easily accomplished within an Architect flow.
+You want to trigger a data action from your Architect flow that enables or disables an emergency group by ID. However, the Architect API provides only a PUT method, and that method overwrites the emergency group and disconnects all of its associated IVRs unless their GUIDs are provided in the request body. The workaround is to perform a GET operation on the emergency group, change the value of `enabled` in the response object, and use that JSON data as your request body in the PUT operation. These operations cannot be easily accomplished within an Architect flow.
 
 ## Solution
 
@@ -27,20 +27,14 @@ You want to trigger a data action from your Architect flow that enables or disab
 * Create the necessary IAM roles and policies.
 * Create a Genesys Cloud Lambda integration and data action to trigger the AWS Lambda function.  
 
-## Contents 
-
-* [Solution components](#solution-components "Goes to the Solution components section")
-* [Software development kits](#software-development-kits "Goes to the Software development kits section")
-* [Prerequisites](#prerequisites "Goes to the Prerequisites section")
-
-## Solution component
+## Solution components
 
 * **Genesys Cloud** - A suite of Genesys Cloud services for enterprise-grade communications, collaboration, and contact center management. In this solution, you use a Genesys Cloud integration and data action.
 * **CX as Code** - A Genesys Cloud Terraform provider that provides a command-line interface for declaring core Genesys Cloud objects.
-* **AWS Terraform Provider** - An Amazon supported Terraform provides an interface for declaring Amazon Web Services infrastructure.
+* **AWS Terraform Provider** - An Amazon supported Terraform provider that has an interface for declaring Amazon Web Services infrastructure.
 * **AWS Lambda** - A serverless computing service for running code without creating or maintaining the underlying infrastructure. For more information, see [AWS Lambda](https://aws.amazon.com/lambda/ "Opens the Amazon AWS Lambda page") in the Amazon featured services website. 
 
-![Enable an emergency group by calling an AWS Lambda via Genesys Cloud Data Action](images/terraform.png "Enable an emergency group by calling an AWS Lambda via Genesys Cloud Data Action")
+![Enable an emergency group by calling an AWS Lambda via a Genesys Cloud data action](images/terraform.png "Enable an emergency group by calling an AWS Lambda via a Genesys Cloud data action")
 
 ## Software development kits
 
@@ -54,7 +48,7 @@ You can change the AWS Lambda function in the `lambda-code` directory. To rebuil
    GOOS=linux go build -o bin/main ./...
    ```
 
-A Linux executable file named `main` is built in the `/bin` directory. The CX as Code tool compresses the `main` file and deploys the zip as part of the AWS Lambda deploy via Terraform.
+A Linux executable file named `main` is built in the `/bin` directory. The CX as Code tool compresses the `main` file and deploys the zip file as part of the AWS Lambda deploy via Terraform.
 
 :::primary
 
@@ -80,7 +74,7 @@ A Linux executable file named `main` is built in the `/bin` directory. The CX as
 * An administrator account with permissions to access the following services:
   * AWS Identity and Access Management (IAM)
   * AWS Lambda
-* AWS credentials. For more information about setting up your AWS credentials on your local machine, see [About credential providers](https://docs.aws.amazon.com/sdkref/latest/guide/creds-config-files.html "Opens the About credential providers page") in AWS documentation.
+* AWS credentials. For more information about setting up your AWS credentials on your local machine, see [About credential providers](https://docs.aws.amazon.com/sdkref/latest/guide/creds-config-files.html "Opens the About credential providers page") in the AWS documentation.
 
 ### Development tools running in your local environment
 
@@ -90,20 +84,20 @@ A Linux executable file named `main` is built in the `/bin` directory. The CX as
 ### Clone the GitHub repository
 
 Clone the GitHub repository [set-emergency-group-lambda-blueprint](https://github.com/GenesysCloudBlueprints/set-emergency-group-lambda-blueprint "Opens the GitHub repository") to your local machine. The `set-emergency-group-lambda-blueprint/blueprint` folder includes solution-specific scripts and files in the following subfolders:
-* `lambda-code` - Source code for the AWS Lambda function.
-* `terraform` - All Terraform files to deploy the application.
+* `lambda-code` - Source code for the AWS Lambda function
+* `terraform` - All Terraform files to deploy the application
 
 ### Set up your AWS and Genesys Cloud credentials
 
-To run this project using the AWS and Genesys Cloud Terraform provider, open a terminal window, set the following environment variables and run Terraform:
+To run this project using the AWS and Genesys Cloud Terraform provider, open a Terminal window, set the following environment variables and run Terraform:
 
  * `GENESYSCLOUD_OAUTHCLIENT_ID` - The Genesys Cloud OAuth client credential under which the CX as Code provider runs.
  * `GENESYSCLOUD_OAUTHCLIENT_SECRET` - The Genesys Cloud OAuth client secret under which the CX as Code provider runs.
  * `GENESYSCLOUD_REGION` - Location of your organization in the Genesys Cloud region.
- * `AWS_ACCESS_KEY_ID` - The AWS Access Key that you must set up in your Amazon account to allow the AWS Terraform provider to act.
- * `AWS_SECRET_ACCESS_KEY` - The AWS Secret that you must set up in your Amazon account to allow the AWS Terraform provider to act.
+ * `AWS_ACCESS_KEY_ID` - The AWS access key that you must set up in your Amazon account to allow the AWS Terraform provider to act.
+ * `AWS_SECRET_ACCESS_KEY` - The AWS secret that you must set up in your Amazon account to allow the AWS Terraform provider to act.
 
-**Note:** In this project, the Genesys Cloud OAuth Client is given the Master Admin role.
+**Note:** In this project, the Genesys Cloud OAuth client is given the Master Admin role.
 
 ### Configure your Terraform build
 
@@ -134,13 +128,13 @@ did_numbers            = ["+12345678910"]
 
 After you set the environment variables and Terraform configuration, execute the following commands from the `blueprints/terraform` directory:
 
-1. `terraform plan` - This command executes a trial run on your Genesys Cloud organization and shows a list of all the newly created AWS and Genesys cloud resources. Ensure to review the list before proceeding to the next step.
+1. `terraform plan` - This command executes a trial run on your Genesys Cloud organization and shows a list of all the newly created AWS and Genesys Cloud resources. Be sure to review the list before proceeding to the next step.
 
-2. `terraform apply --auto-approve` - Creates and deploys the AWS and Genesys Cloud objects to your AWS and Genesys Cloud accounts. The `--auto--approve` flag provides the necessary approval for the object creation. The command output lists all the objects successfully created by Terraform.
+2. `terraform apply --auto-approve` - Creates and deploys the AWS and Genesys Cloud objects to your AWS and Genesys Cloud accounts. The `--auto--approve` flag provides the necessary approval for the object creation. The command output lists all the objects that have been successfully created by Terraform.
 
 The project in this blueprint has the following assumptions:
 
-* The local state file in Terraform named `terraform.tfstate` is created and stored in the same folder as the project. Terraform recommends storing the state file on a remote machine unless you want to run Terraform locally and comfortable with the file deletion.
+* The local state file in Terraform, named `terraform.tfstate`, is created and stored in the same folder as the project. Terraform recommends storing the state file on a remote machine unless you want to run Terraform locally and are comfortable with the deletion of the state file.
 * To clean up the org and remove all the objects that are managed by the local Terraform state file, you use the `terraform destroy --auto-approve` command from the `blueprint/terraform` directory. Ensure that you have backed up your projects before deleting the projects.
 
 ### Test the deployment
@@ -154,4 +148,3 @@ Dial a phone number that was provided to the `did_numbers` value and follow the 
 * [Genesys Cloud data actions/lambda integrations article](https://help.mypurecloud.com/articles/about-the-aws-lambda-data-actions-integration/ "Opens the data actions/lambda integrations article") in the Genesys Cloud Resource Center
 * [Terraform Registry Documentation](https://registry.terraform.io/providers/MyPureCloud/genesyscloud/latest/docs "Opens the Genesys Cloud provider page") in the Terraform documentation
 * [Genesys Cloud DevOps Repository](https://github.com/GenesysCloudDevOps "Opens the Genesys Cloud DevOps GitHub") 
-
