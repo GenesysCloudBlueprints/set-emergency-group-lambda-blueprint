@@ -14,7 +14,7 @@ This blueprint demonstrates how to:
 
 * Build an AWS Lambda function to interact with the Genesys Cloud Public API.
 * Build the necessary AWS IAM Roles to allow for a data action to interact with the AWS Lambda function.
-* Build a Genesys Cloud data action and integration, configured with the correct Amazon Role ARN <check this>.
+* Build a Genesys Cloud data action and integration, configured with the correct Amazon Resource Names (ARNs).
 * Deploy the required infrastructure using Terraform and CX as Code.
 
 ## Scenario
@@ -147,4 +147,5 @@ Dial a phone number that was provided to the `did_numbers` value and follow the 
 * [Genesys Cloud data actions integrations article](https://help.mypurecloud.com/?p=209478 "Opens the data actions integrations article") in the Genesys Cloud Resource Center
 * [Genesys Cloud data actions/lambda integrations article](https://help.mypurecloud.com/articles/about-the-aws-lambda-data-actions-integration/ "Opens the data actions/lambda integrations article") in the Genesys Cloud Resource Center
 * [Terraform Registry Documentation](https://registry.terraform.io/providers/MyPureCloud/genesyscloud/latest/docs "Opens the Genesys Cloud provider page") in the Terraform documentation
-* [Genesys Cloud DevOps Repository](https://github.com/GenesysCloudDevOps "Opens the Genesys Cloud DevOps GitHub") 
+* [Genesys Cloud DevOps Repository](https://github.com/GenesysCloudDevOps "Opens the Genesys Cloud DevOps GitHub")
+* The [set-emergency-group-lambda-blueprint](https://github.com/GenesysCloudBlueprints/set-emergency-group-lambda-blueprint "Opens the GitHub repository") repository in GitHub
